@@ -11,6 +11,8 @@ namespace WebAPIDemo.App_Start
     using Ninject;
     using Ninject.Web.Common;
     using Models;
+    using WebApiContrib.IoC.Ninject;
+    using System.Web.Http;
     public static class NinjectWebCommon 
     {
         private static readonly Bootstrapper bootstrapper = new Bootstrapper();
@@ -44,6 +46,9 @@ namespace WebAPIDemo.App_Start
             {
                 kernel.Bind<Func<IKernel>>().ToMethod(ctx => () => new Bootstrapper().Kernel);
                 kernel.Bind<IHttpModule>().To<HttpApplicationInitializationHttpModule>();
+
+                //webAPI
+                GlobalConfiguration.Configuration.DependencyResolver = new NinjectResolver(kernel);
 
                 RegisterServices(kernel);
                 return kernel;
